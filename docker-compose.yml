@@ -1,0 +1,69 @@
+version: "3.3"
+
+services:
+  orthanc:
+    container_name: orthanc
+    image: orthancteam/orthanc
+    volumes:
+      - ./orthanc-config/plugins.json:/etc/orthanc/plugins.json
+    ports:
+      - 8044:8042
+    environment:
+      - TRACE_ENABLED=true
+    networks:
+      - "orthanc-network"
+
+  orthanc-authorization-server:
+    container_name: authorization-server
+    ports:
+      - 8080:8080
+    build: ./express-server
+    networks:
+      - "orthanc-network"
+
+  orthanc-mysql-server:
+    container_name: mysql-server
+    image: mysql:8.0
+    command: [
+      mysqld,
+      --default-authentication-plugin=mysql_native_password,
+      --log-bin-trust-function-creators=1,
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    volumes:
+      - orthanc-mysql:/var/lib/mysql
+    networks:
+      - "orthanc-network"
+
+  orthanc-phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin
+    privileged: false
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - 8081:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: orthanc-mysql-server
+      PMA_USER: ${DB_USERNAME}
+      PMA_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - orthanc-mysql-server
+    networks:
+      - "orthanc-network"
+
+volumes:
+  orthanc-mysql:
+    driver: local
+
+networks:
+  orthanc-network:
+    name: orthanc-network
+    driver: bridge

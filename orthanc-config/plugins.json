@@ -1,0 +1,76 @@
+{
+  "Name": "Orthanc",
+  "MetricsEnabled": true,
+  "AuthenticationEnabled": false,
+  "WebViewer": {
+    "AnnotationStorageEnabled": true,
+    "StudyDownloadEnabled": true,
+    "VideoDisplayEnabled": false,
+    "KeyImageCaptureEnabled": true,
+    "KeyboardShortcutsEnabled": true,
+    "DefaultStudyIslandsDisplayMode": "oneCol"
+  },
+  "DicomWeb": {
+    "Enable": true,
+    "Root": "/dicom-web/",
+    "EnableWado": true,
+    "WadoRoot": "/wado",
+    "Ssl": false,
+    "QidoCaseSensitive": true,
+    "Host": "localhost:8044",
+    "StudiesMetadata": "Extrapolate",
+    "StudiesMetadataExtrapolatedTags": ["AcquisitionDate"],
+    "SeriesMetadata": "Extrapolate",
+    "SeriesMetadataExtrapolatedTags": [
+      "BitsAllocated",
+      "BitsStored",
+      "Columns",
+      "HighBit",
+      "PhotometricInterpretation",
+      "PixelSpacing",
+      "PlanarConfiguration",
+      "RescaleIntercept",
+      "RescaleSlope",
+      "Rows",
+      "SOPClassUID",
+      "SamplesPerPixel",
+      "SliceThickness"
+    ],
+    "EnableMetadataCache": true,
+    "MetadataWorkerThreadsCount": 4
+  },
+  "Authorization": {
+    "WebService": "http://authorization-server:8080/auth",
+    "TokenHttpHeaders": ["Token"],
+    "UncheckedResources": ["/osimis-viewer/config.js", "/system"],
+    "UncheckedFolders": [
+      "/tools/metrics-prometheus",
+      "/plugins",
+      "/app/",
+      "/wsi/app/",
+      "/osimis-viewer/app/",
+      "/osimis-viewer/languages/"
+    ],
+    "UncheckedLevels": ["patient", "series", "instances"]
+  },
+  "MySQL" : {
+    "EnableIndex" : true,
+    "EnableStorage" : true,
+    "Host" : "orthanc-mysql-server",
+    "Port" : 3306,
+    "UnixSocket" : "/var/run/mysqld/mysqld.sock",
+    "Database" : "orthanc",
+    "Username" : "orthanc",
+    "Password" : "orthanc",
+    "EnableSsl" : false,
+    "SslVerifyServerCertificates": true,
+    "SslCACertificates": "",
+    "Lock" : true,
+    "MaximumConnectionRetries" : 10,
+    "ConnectionRetryInterval" : 5,
+    "IndexConnectionsCount" : 1
+  },
+  "Plugins": [
+    "/usr/share/orthanc/plugins"
+  ]
+}
