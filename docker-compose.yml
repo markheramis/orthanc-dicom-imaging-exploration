@@ -12,16 +12,23 @@ services:
       - TRACE_ENABLED=true
     networks:
       - "orthanc-network"
+    depends_on:
+      - mysql-server
+      - authorization-server
 
-  orthanc-authorization-server:
+  authorization-server:
     container_name: authorization-server
     ports:
       - 8080:8080
-    build: ./express-server
+    build:
+      context: ./express-server
+      dockerfile: Dockerfile
+    volumes:
+      - ./express-server:/usr/src/app
     networks:
       - "orthanc-network"
 
-  orthanc-mysql-server:
+  mysql-server:
     container_name: mysql-server
     image: mysql:8.0
     command: [
@@ -36,11 +43,11 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ALLOW_EMPTY_PASSWORD: "no"
     volumes:
-      - orthanc-mysql:/var/lib/mysql
+      - ./database:/var/lib/mysql
     networks:
       - "orthanc-network"
 
-  orthanc-phpmyadmin:
+  phpmyadmin:
     container_name: phpmyadmin
     image: phpmyadmin
     privileged: false
@@ -50,18 +57,14 @@ services:
       - 8081:80
     environment:
       PMA_ARBITRARY: 1
-      PMA_HOST: orthanc-mysql-server
+      PMA_HOST: mysql-server
       PMA_USER: ${DB_USERNAME}
       PMA_PASSWORD: ${DB_PASSWORD}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     depends_on:
-      - orthanc-mysql-server
+      - mysql-server
     networks:
       - "orthanc-network"
-
-volumes:
-  orthanc-mysql:
-    driver: local
 
 networks:
   orthanc-network:

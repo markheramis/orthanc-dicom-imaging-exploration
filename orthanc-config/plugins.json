@@ -41,8 +41,12 @@
   },
   "Authorization": {
     "WebService": "http://authorization-server:8080/auth",
-    "TokenHttpHeaders": ["Token"],
-    "UncheckedResources": ["/osimis-viewer/config.js", "/system"],
+    "TokenHttpHeaders": [
+      "Authorization"
+    ],
+    "UncheckedResources": [
+      "/osimis-viewer/config.js", "/system"
+    ],
     "UncheckedFolders": [
       "/tools/metrics-prometheus",
       "/plugins",
@@ -51,12 +55,16 @@
       "/osimis-viewer/app/",
       "/osimis-viewer/languages/"
     ],
-    "UncheckedLevels": ["patient", "series", "instances"]
+    "UncheckedLevels": [
+      "patient",
+      "series",
+      "instances"
+    ]
   },
   "MySQL" : {
     "EnableIndex" : true,
     "EnableStorage" : true,
-    "Host" : "orthanc-mysql-server",
+    "Host" : "mysql-server",
     "Port" : 3306,
     "UnixSocket" : "/var/run/mysqld/mysqld.sock",
     "Database" : "orthanc",
