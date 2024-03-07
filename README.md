@@ -33,7 +33,7 @@ This project integrates [Orthanc](https://www.orthanc-server.com/), a lightweigh
     ```
 2. Create a .env file in the root directory with the following environment variables:
     ```
-    DB_HOST=orthanc-mysql-server
+    DB_HOST=mysql-server
     DB_DATABASE=demo
     DB_USERNAME=demo
     DB_PASSWORD=demo
