@@ -15,7 +15,7 @@ This project integrates [Orthanc](https://www.orthanc-server.com/), a lightweigh
 
 ## Features
 
-- **Orthanc DICOM Server**: A lightweight and open-source DICOM server accessible at http://localhost:8044.
+- **Orthanc DICOM Server**: A lightweight and open-source DICOM server accessible at http://localhost:8042.
 - **Authorization Server**: A custom authentication server for Orthanc running at http://localhost:8080.
 - **MySQL Server**: A MySQL server for data storage.
 - **PhpMyAdmin**: Web-based MySQL management tool accessible at http://localhost:8081.
