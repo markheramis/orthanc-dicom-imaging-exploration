@@ -49,16 +49,16 @@ Orthanc Configuration: Modify orthanc-config/plugins.json to suit your Orthanc s
 
 ## Usage
 
-- The Orthanc DICOM server is accessible at http://localhost:8044.
+- The Orthanc DICOM server is accessible at http://localhost:8042.
 - The Orthanc Authorization Server is running at http://localhost:8080.
 - PhpMyAdmin is accessible at http://localhost:8081.
 - Post dicom file using CURL, execute:
     ```
-    curl -v -X POST -H 'Token: demo' --data-binary @image-00000.dcm http://localhost:8044/instances
+    curl -v -X POST -H 'Token: demo' --data-binary @image-00000.dcm http://localhost:8042/instances
     ```
 - Get study metadata via DICOM-WEB plugin using CURL, execute:
     ```
-    curl -v -H 'Token: demo' -H 'Content-type: application/json' http://localhost:8044/dicom-web/studies/1.2.826.0.1.3680043.8.1055.1.20170626100116652.756727516.6235062/metadata
+    curl -v -H 'Token: demo' -H 'Content-type: application/json' http://localhost:8042/dicom-web/studies/1.2.826.0.1.3680043.8.1055.1.20170626100116652.756727516.6235062/metadata
     ```
 
 ## Accessing PhpMyAdmin
