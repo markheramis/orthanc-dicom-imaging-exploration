@@ -22,7 +22,7 @@ app.post("/auth", (request, response) => {
     }
     let token = request_body["token-value"];
     // Remove "bearer " part of the token
-    if (token.startsWith("bearer ")) {
+    if (token.startsWith("bearer ") || token.startsWith("Bearer ")) {
         token = token.slice(7);
     }
 	// check if token is "demo"
