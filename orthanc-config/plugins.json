@@ -10,6 +10,13 @@
     "KeyboardShortcutsEnabled": true,
     "DefaultStudyIslandsDisplayMode": "oneCol"
   },
+  "Dicom": {
+    "DicomServer": {
+      "Enable": true,
+      "Address": "0.0.0.0",
+      "Port": 4242
+    }
+  },
   "DicomWeb": {
     "Enable": true,
     "Root": "/dicom-web/",
@@ -17,7 +24,7 @@
     "WadoRoot": "/wado",
     "Ssl": false,
     "QidoCaseSensitive": true,
-    "Host": "localhost:8044",
+    "Host": "localhost:8042",
     "StudiesMetadata": "Extrapolate",
     "StudiesMetadataExtrapolatedTags": ["AcquisitionDate"],
     "SeriesMetadata": "Extrapolate",

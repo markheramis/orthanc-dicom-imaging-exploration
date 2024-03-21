@@ -7,7 +7,8 @@ services:
     volumes:
       - ./orthanc-config/plugins.json:/etc/orthanc/plugins.json
     ports:
-      - 8044:8042
+      - 8042:8042
+      - 4242:4242
     environment:
       - TRACE_ENABLED=true
     networks:
@@ -58,8 +59,7 @@ services:
     environment:
       PMA_ARBITRARY: 1
       PMA_HOST: mysql-server
-      PMA_USER: ${DB_USERNAME}
-      PMA_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - mysql-server
