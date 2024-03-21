@@ -2,6 +2,7 @@
   "Name": "Orthanc",
   "MetricsEnabled": true,
   "AuthenticationEnabled": false,
+  "OrthancExplorerEnabled": true,
   "WebViewer": {
     "AnnotationStorageEnabled": true,
     "StudyDownloadEnabled": true,
@@ -18,6 +19,14 @@
     }
   },
   "DicomWeb": {
+    "Servers" : {
+      "production-dicom-web" : {
+        "Url" : "http://localhost:8042/dicom-web/",
+        "HttpHeaders": {
+          "Authorization" : "Bearer demo"
+        }
+      }
+    },
     "Enable": true,
     "Root": "/dicom-web/",
     "EnableWado": true,
@@ -25,9 +34,9 @@
     "Ssl": false,
     "QidoCaseSensitive": true,
     "Host": "localhost:8042",
-    "StudiesMetadata": "Extrapolate",
+    "StudiesMetadata" : "Full",
     "StudiesMetadataExtrapolatedTags": ["AcquisitionDate"],
-    "SeriesMetadata": "Extrapolate",
+    "SeriesMetadata" : "Full",
     "SeriesMetadataExtrapolatedTags": [
       "BitsAllocated",
       "BitsStored",
@@ -46,28 +55,6 @@
     "EnableMetadataCache": true,
     "MetadataWorkerThreadsCount": 4
   },
-  "Authorization": {
-    "WebService": "http://authorization-server:8080/auth",
-    "TokenHttpHeaders": [
-      "Authorization"
-    ],
-    "UncheckedResources": [
-      "/osimis-viewer/config.js", "/system"
-    ],
-    "UncheckedFolders": [
-      "/tools/metrics-prometheus",
-      "/plugins",
-      "/app/",
-      "/wsi/app/",
-      "/osimis-viewer/app/",
-      "/osimis-viewer/languages/"
-    ],
-    "UncheckedLevels": [
-      "patient",
-      "series",
-      "instances"
-    ]
-  },
   "MySQL" : {
     "EnableIndex" : true,
     "EnableStorage" : true,
@@ -84,6 +71,44 @@
     "MaximumConnectionRetries" : 10,
     "ConnectionRetryInterval" : 5,
     "IndexConnectionsCount" : 1
+  },
+  "Authorization": {
+    "WebService": "http://authorization-server:8080/auth",
+    "TokenHttpHeaders": [
+      "Authorization"
+    ],
+    "TokenGetArguments": [
+      "Token"
+    ],
+    "StandardConfigurations": [
+      "osimis-web-viewer",
+      "stone-webviewer",
+      "orthanc-explorer-2",
+      "ohif"
+    ],
+    "UncheckedResources": [
+      "/osimis-viewer/config.js",
+      "/system",
+      "/dicom-web/servers",
+      "/dicom-web/info"
+    ],
+    "UncheckedFolders": [
+      "/tools/metrics-prometheus",
+      "/plugins",
+      "/app/",
+      "/wsi/app/",
+      "/osimis-viewer/app/",
+      "/osimis-viewer/languages/",
+      "/dicom-web/app/client/",
+      "/dicom-web/app/libs/",
+      "/dicom-web/servers/*/qido"
+    ],
+    "UncheckedLevels": [
+      "patient",
+      "series",
+      "instances"
+    ]
+
   },
   "Plugins": [
     "/usr/share/orthanc/plugins"
