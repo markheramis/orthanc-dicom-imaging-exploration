@@ -1,5 +1,5 @@
 server {
-    listen 4242 ssl;
+    listen 8242 ssl;
     server_name {orthancdomain};
 
     ssl_certificate {certificate_path};
