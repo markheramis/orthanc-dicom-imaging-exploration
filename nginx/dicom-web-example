@@ -10,7 +10,7 @@ server {
     ssl_certificate_key {certificate_key_path};
 
     include /etc/nginx/default.d/*.conf;
-
+    
     add_header Access-Control-Allow-Origin '*' always;
     add_header Access-Control-Allow-Credentials 'true' always;
     add_header Access-Control-Allow-Headers 'Authorization,Accept,Origin,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Content-Range,Range' always;
@@ -23,6 +23,25 @@ server {
     # Set maximum upload size to 1GB
     client_max_body_size 1G;
 
+    # Cache configuration
+    proxy_cache_path /var/cache/nginx/dicom_cache levels=1:2 keys_zone=dicom_cache:10m max_size=10g inactive=60m;
+    # # Cache key format
+    proxy_cache_key "$scheme$request_method$host$request_uri";
+
+    # -------------------------------------------
+    # CACHE VALIDITY FOR DIFFERENT RESPONSE CODES
+    # -------------------------------------------
+    # Cache valid for these response codes for 1 hour
+    proxy_cache_valid 200 301 302 304 1h;
+    # Cache valid for any other response for 1 minute
+    proxy_cache_valid any 1m;
+
+    # --------------------
+    # STALE CACHE HANDLING
+    # --------------------
+    # Use stale cache if certain errors occur
+    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+
     location / {
         if ($request_method = 'OPTIONS') {
             return 204;
@@ -33,6 +52,22 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $server_name;
         proxy_ssl_server_name on;
+        
+        # --------------
+        # CACHE CONTROL
+        # --------------
+        # Use the dicom_cache defined above
+        proxy_cache dicom_cache;
+        # Enable cache locking to prevent simultaneous updates
+        proxy_cache_lock on;
+        # Timeout for cache locks
+        proxy_cache_lock_timeout 5s;
+        # Perform cache updates in the background
+        proxy_cache_background_update on;
+        # Revalidate cached responses with the origin server
+        proxy_cache_revalidate on;
+        # Add header indicating cache status
+        add_header X-Cached $upstream_cache_status;
     }
 }
 
@@ -41,6 +76,7 @@ server {
     listen [::]:80;
     server_name {dicomwebdomain};
     location / {
+        # Redirect HTTP to HTTPS
         return 301 https://$host$request_uri;
     }
 }
