@@ -1,3 +1,6 @@
+# Cache configuration
+proxy_cache_path /var/cache/nginx/dicom_cache levels=1:2 keys_zone=dicom_cache:10m max_size=10g inactive=60m;
+
 server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
@@ -23,8 +26,6 @@ server {
     # Set maximum upload size to 1GB
     client_max_body_size 1G;
 
-    # Cache configuration
-    proxy_cache_path /var/cache/nginx/dicom_cache levels=1:2 keys_zone=dicom_cache:10m max_size=10g inactive=60m;
     # # Cache key format
     proxy_cache_key "$scheme$request_method$host$request_uri";
 
