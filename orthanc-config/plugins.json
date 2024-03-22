@@ -101,7 +101,7 @@
       "/osimis-viewer/languages/",
       "/dicom-web/app/client/",
       "/dicom-web/app/libs/",
-      "/dicom-web/servers/*/qido"
+      "/dicom-web/studies"
     ],
     "UncheckedLevels": [
       "patient",
