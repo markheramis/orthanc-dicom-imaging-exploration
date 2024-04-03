@@ -1,8 +1,406 @@
 {
   "Name": "Orthanc",
+
+  // Path to the directory that holds the heavyweight files (i.e. the
+  // raw DICOM instances). Backslashes must be either escaped by
+  // doubling them, or replaced by forward slashes "/".
+  "StorageDirectory": "/var/lib/orthanc/storage",
+
+  // Enable the transparent compression of the DICOM instances
+  "StorageCompression": false,
+
+  // @todo document this configuration
+  "StrictAetComparison": false,
+
+  // When the following option is "true", the MD5 of the DICOM files
+  // will be computed and stored in the Orthanc database. This
+  // information can be used to detect disk corruption, at the price
+  // of a small performance overhead.
+  "StoreMD5ForAttachments": true,
+
+  // Path to the directory where Orthanc stores its large temporary
+  // files. The content of this folder can be safely deleted once
+  // Orthanc is stopped. The folder must exist. The corresponding
+  // filesystem must be properly sized, given that for instance a ZIP
+  // archive of DICOM images created by a job can weight several GBs,
+  // and that there might be up to "min(JobsHistorySize,
+  // MediaArchiveSize)" archives to be stored simultaneously. If not
+  // set, Orthanc will use the default temporary folder of the
+  // operating system (such as "/tmp/" on UNIX-like systems, or
+  // "C:/Temp" on Microsoft Windows).
+  "TemporaryDirectory" : "/tmp/Orthanc/",
+
+  // Maximum size of the storage in MB (a value of "0" indicates no
+  // limit on the storage size)
+  "MaximumStorageSize": 0,
+
+  // Maximum number of patients that can be stored at a given time
+  // in the storage (a value of "0" indicates no limit on the number
+  // of patients)
+  "MaximumPatientCount": 0,
+  "LuaScripts": [],
+
+  // Whether Orthanc monitors its metrics (new in Orthanc 1.5.4). If
+  // set to "true", the metrics can be retrieved at
+  // "/tools/metrics-prometheus" formetted using the Prometheus
+  // text-based exposition format.
   "MetricsEnabled": true,
-  "AuthenticationEnabled": false,
+  
+  // Enable/disable the Orthanc Explorer Web user interface. This
+  // option is only meaningful if the "HttpServerEnabled" option is
+  // set to "true" (new in Orthanc 1.8.2).
   "OrthancExplorerEnabled": true,
+
+  // Maximum number of processing jobs that are simultaneously running
+  // at any given time. A value of "0" indicates to use all the
+  // available CPU logical cores. To emulate Orthanc <= 1.3.2, set
+  // this value to "1".
+  "ConcurrentJobs": 2,
+
+  // Defines the number of threads that are used to execute each type of
+  // jobs (for the jobs that can be parallelized).
+  // A value of "0" indicates to use all the available CPU logical cores.
+  // (new in Orthanc 1.11.3)
+  "JobsEngineThreadsCount" : {
+    "ResourceModification": 1     // for /anonymize, /modify
+  },
+
+  // Enable the HTTP server. If this parameter is set to "false",
+  // Orthanc acts as a pure DICOM server. The REST API and Orthanc
+  // Explorer will not be available.
+  "HttpServerEnabled": true,
+
+  // HTTP port for the REST services and for the GUI
+  "HttpPort": 8042,
+
+  // When the following option is "true", if an error is encountered
+  // while calling the REST API, a JSON message describing the error
+  // is put in the HTTP answer. This feature can be disabled if the
+  // HTTP client does not properly handles such answers.
+  "HttpDescribeErrors": true,
+
+  // Enable HTTP compression to improve network bandwidth utilization,
+  // at the expense of more computations on the server. Orthanc
+  // supports the "gzip" and "deflate" HTTP encodings.
+  // When working on a LAN or on localhost, you should typically set
+  // this configuration to false while when working on low-bandwidth,
+  // you should set it to true.
+  // Note in versions up to 1.12.1, the default value was "true" and is
+  // "false" since 1.12.2.
+  "HttpCompressionEnabled": true,
+
+  // Enable the DICOM server. If this parameter is set to "false",
+  // Orthanc acts as a pure REST server. It will not be possible to
+  // receive files or to do query/retrieve through the DICOM protocol.
+  "DicomServerEnabled": true,
+  // The DICOM Application Entity Title (cannot be longer than 16
+  // characters)
+  "DicomAet": "ORTHANC",
+  // Check whether the called AET corresponds to the AET of Orthanc
+  // during an incoming DICOM SCU request
+  "DicomCheckCalledAet": false,
+  // The DICOM port
+  "DicomPort": 4242,
+
+  // The default encoding that is assumed for DICOM files without
+  // "SpecificCharacterSet" DICOM tag, and that is used when answering
+  // C-FIND requests (including worklists). The allowed values are
+  // "Ascii", "Utf8", "Latin1", "Latin2", "Latin3", "Latin4",
+  // "Latin5", "Cyrillic", "Windows1251", "Arabic", "Greek", "Hebrew",
+  // "Thai", "Japanese", "Chinese", "JapaneseKanji", "Korean", and
+  // "SimplifiedChinese".
+  "DefaultEncoding": "Latin1",
+
+  // User-friendly groups of transfer syntaxes that can be enabled or
+  // disabled at once. These options are applied after the main
+  // "AcceptedTransferSyntaxes" option has been applied (if present).
+  "DeflatedTransferSyntaxAccepted"     : true,
+  "JpegTransferSyntaxAccepted"         : true,
+  "Jpeg2000TransferSyntaxAccepted"     : true,
+  "JpegLosslessTransferSyntaxAccepted" : true,
+  "JpipTransferSyntaxAccepted"         : true,
+  "Mpeg2TransferSyntaxAccepted"        : true,
+  "RleTransferSyntaxAccepted"          : true,
+  "Mpeg4TransferSyntaxAccepted"        : true,  // New in Orthanc 1.6.0
+  "H265TransferSyntaxAccepted"         : true,  // New in Orthanc 1.9.0
+
+  // Whether Orthanc accepts to act as C-STORE SCP for unknown storage
+  // SOP classes (aka. "promiscuous mode")
+  "UnknownSopClassAccepted": false,
+
+  // Set the timeout (in seconds) after which the DICOM associations
+  // are closed by the Orthanc SCP (server) if no further DIMSE
+  // command is received from the SCU (client).
+  "DicomScpTimeout": 1000,
+
+  // Whether remote hosts can connect to the HTTP server
+  "RemoteAccessAllowed": true,
+
+  // Whether or not SSL is enabled
+  "SslEnabled": false,
+
+  // Path to the SSL certificate used by the HTTP server. The file
+  // must be stored in the PEM format, and must contain both the
+  // certificate and the private key. This option is only meaningful
+  // if "SslEnabled" is true.
+  
+  "SslCertificate": "certificate.pem",
+  // Whether or not the password protection is enabled (using HTTP
+  // basic access authentication). Starting with Orthanc 1.5.8, if
+  // "AuthenticationEnabled" is not explicitly set, authentication is
+  // enabled iff. remote access is allowed (i.e. the default value of
+  // "AuthenticationEnabled" equals that of "RemoteAccessAllowed").
+  "AuthenticationEnabled": false,
+
+  // The list of the known DICOM modalities. This option is ignored if
+  // "DicomModalitiesInDatabase" is set to "true", in which case you
+  // must use the REST API to define modalities.
+  "DicomModalities": {},
+
+  // Whether to store the DICOM modalities in the Orthanc database
+  // instead of in this configuration file (new in Orthanc 1.5.0)
+  "DicomModalitiesInDatabase": false,
+
+  // Whether the Orthanc SCP allows incoming C-ECHO requests, even
+  // from SCU modalities it does not know about (i.e. that are not
+  // listed in the "DicomModalities" option above). Orthanc 1.3.0
+  // is the only version to behave as if this argument were set to "false".
+  "DicomAlwaysAllowEcho": true,
+
+  // Whether the Orthanc SCP allows incoming C-STORE requests, even
+  // from SCU modalities it does not know about (i.e. that are not
+  // listed in the "DicomModalities" option above)
+  "DicomAlwaysAllowStore": true,
+
+  // Whether Orthanc checks the IP/hostname address of the remote
+  // modality initiating a DICOM connection (as listed in the
+  // "DicomModalities" option above). If this option is set to
+  // "false", Orthanc only checks the AET of the remote modality.
+  "DicomCheckModalityHost": false,
+
+  // The timeout (in seconds) after which the DICOM associations are
+  // considered as closed by the Orthanc SCU (client) if the remote
+  // DICOM SCP (server) does not answer.
+  "DicomScuTimeout": 1000,
+
+  // The list of the known Orthanc peers. This option is ignored if
+  // "OrthancPeersInDatabase" is set to "true", in which case you must
+  // use the REST API to define Orthanc peers.
+  "OrthancPeers": {},
+
+  // Whether to store the Orthanc peers in the Orthanc database
+  // instead of in this configuration file (new in Orthanc 1.5.0)
+  "OrthancPeersInDatabase": false,
+
+  // Parameters of the HTTP proxy to be used by Orthanc. If set to the
+  // empty string, no HTTP proxy is used. For instance:
+  //   "HttpProxy" : "192.168.0.1:3128"
+  //   "HttpProxy" : "proxyUser:proxyPassword@192.168.0.1:3128"
+  "HttpProxy": "",
+
+  // If set to "true", debug messages from libcurl will be issued
+  // whenever Orthanc makes an outgoing HTTP request. This is notably
+  // useful to debug HTTPS-related problems.
+  "HttpVerbose": true,
+
+  // Set the timeout for HTTP requests issued by Orthanc (in seconds).
+  "HttpTimeout": 1000,
+
+  // Enable the verification of the peers during HTTPS requests. This
+  // option must be set to "false" if using self-signed certificates.
+  // Pay attention that setting this option to "false" results in
+  // security risks!
+  // Reference: http://curl.haxx.se/docs/sslcerts.html
+  "HttpsVerifyPeers": true,
+
+  // Path to the CA (certification authority) certificates to validate
+  // peers in HTTPS requests. From curl documentation ("--cacert"
+  // option): "Tells curl to use the specified certificate file to
+  // verify the peers. The file may contain multiple CA
+  // certificates. The certificate(s) must be in PEM format." On
+  // Debian-based systems, this option can be set to
+  // "/etc/ssl/certs/ca-certificates.crt"
+  "HttpsCACertificates": "",
+
+  // Dictionary of symbolic names for the user-defined metadata. Each
+  // entry must map an unique string to an unique number between 1024
+  // and 65535. Reserved values:
+  //  - The Orthanc whole-slide imaging plugin uses metadata 4200
+  "UserMetadata": {},
+
+  // Dictionary of symbolic names for the user-defined types of
+  // attached files. Each entry must map an unique string to an unique
+  // number between 1024 and 65535. Optionally, a second argument can
+  // provided to specify a MIME content type for the attachment.
+  "UserContentType": {},
+
+  // @todo document this configuration
+  "StableAge": 60,
+
+  // The maximum number of results for a single C-FIND request at the
+  // Patient, Study or Series level. Setting this option to "0" means
+  // no limit.
+  "LimitFindResults": 0,
+
+  // The maximum number of results for a single C-FIND request at the
+  // Instance level. Setting this option to "0" means no limit.
+  "LimitFindInstances": 0,
+
+  // @todo document this configuration
+  "LimitJobs": 10,
+
+  // If this option is set to "true" (default behavior until Orthanc
+  // 1.3.2), Orthanc will log the resources that are exported to other
+  // DICOM modalities or Orthanc peers, inside the URI
+  // "/exports". Setting this option to "false" is useful to prevent
+  // the index to grow indefinitely in auto-routing tasks (this is the
+  // default behavior since Orthanc 1.4.0).
+  "LogExportedResources": false,
+
+  // Enable or disable HTTP Keep-Alive (persistent HTTP
+  // connections). Setting this option to "true" prevents Orthanc
+  // issue #32 ("HttpServer does not support multiple HTTP requests in
+  // the same TCP stream"), but can possibly slow down HTTP clients
+  // that do not support persistent connections. The default behavior
+  // used to be "false" in Orthanc <= 1.5.1. Setting this option to
+  // "false" is also recommended if Orthanc is compiled against
+  // Mongoose.
+  "KeepAlive": true,
+
+  // Enable or disable Nagle's algorithm. Only taken into
+  // consideration if Orthanc is compiled to use CivetWeb. Experiments
+  // show that best performance can be obtained by setting both
+  // "KeepAlive" and "TcpNoDelay" to "true". Beware however of
+  // caveats: https://eklitzke.org/the-caveats-of-tcp-nodelay
+  "TcpNoDelay": true,
+
+  // Number of threads that are used by the embedded HTTP server.
+  "HttpThreadsCount": 50,
+
+  // If this option is set to "false", Orthanc will run in index-only
+  // mode. The DICOM files will not be stored on the drive: Orthanc
+  // only indexes the small subset of the so-called "main DICOM tags"
+  // in its SQL database. Note that this option might prevent the
+  // upgrade to newer versions of Orthanc. Also note that this
+  // behavior might not be available with the storage area plugins.
+  "StoreDicom": true,
+
+  // DICOM associations initiated by Lua scripts are kept open as long
+  // as new DICOM commands are issued. This option sets the number of
+  // seconds of inactivity to wait before automatically closing a
+  // DICOM association used by Lua. If set to 0, the connection is
+  // closed immediately. This option is only used in Lua scripts.
+  "DicomAssociationCloseDelay": 5,
+
+  // Maximum number of query/retrieve DICOM requests that are
+  // maintained by Orthanc. The least recently used requests get
+  // deleted as new requests are issued.
+  "QueryRetrieveSize": 10,
+
+  // When handling a C-FIND SCP request, setting this flag to "true"
+  // will enable case-sensitive match for PN value representation
+  // (such as PatientName). By default, the search is
+  // case-insensitive, which does not follow the DICOM standard.
+  "CaseSensitivePN": false,
+
+  // If set to "false", Orthanc will not load its default dictionary
+  // of private tags. This might be necessary if you cannot import a
+  // DICOM file encoded using the Implicit VR Endian transfer syntax,
+  // and containing private tags: Such an import error might stem from
+  // a bad dictionary. You can still list your private tags of
+  // interest in the "Dictionary" configuration option below.
+  "LoadPrivateDictionary": true,
+
+  // Register a new tag in the dictionary of DICOM tags that are known
+  // to Orthanc. Each line must contain the tag (formatted as 2
+  // hexadecimal numbers), the value representation (2 upcase
+  // characters), a nickname for the tag, possibly the minimum
+  // multiplicity (> 0 with defaults to 1), possibly the maximum
+  // multiplicity (0 means arbitrary multiplicity, defaults to 1), and
+  // possibly the Private Creator (for private tags).
+  // Note: For private tags, you should only declare the lower 8 bits
+  // of the element since the higher 8 bits may vary from one file to
+  // the other.
+  "Dictionary": {},
+
+  // Whether to run DICOM C-MOVE operations synchronously. If set to
+  // "false" (asynchronous mode), each incoming C-MOVE request results
+  // in the creation of a new background job. Up to Orthanc 1.3.2, the
+  // implicit behavior was to use synchronous C-MOVE ("true"). Between
+  // Orthanc 1.4.0 and 1.4.2, the default behavior was set to
+  // asynchronous C-MOVE ("false"). Since Orthanc 1.5.0, the default
+  // behavior is back to synchronous C-MOVE ("true", which ensures
+  // backward compatibility with Orthanc <= 1.3.2).
+  "SynchronousCMove": true,
+
+  // Maximum number of completed jobs that are kept in memory. A
+  // processing job is considered as complete once it is tagged as
+  // "Success" or "Failure". Since Orthanc 1.5.0, a value of "0"
+  // indicates to keep no job in memory (i.e. jobs are removed from
+  // the history as soon as they are completed), which prevents the
+  // use of some features of Orthanc (typically, synchronous mode in
+  // REST API) and should be avoided for non-developers.
+  "JobsHistorySize": 10,
+
+  // Whether to save the jobs into the Orthanc database. If this
+  // option is set to "true", the pending/running/completed jobs are
+  // automatically reloaded from the database if Orthanc is stopped
+  // then restarted (except if the "--no-jobs" command-line argument
+  // is specified). This option should be set to "false" if multiple
+  // Orthanc servers are using the same database (e.g. if PostgreSQL
+  // or MariaDB/MySQL is used).
+  "SaveJobs": true,
+
+  // Specifies how Orthanc reacts when it receives a DICOM instance
+  // whose SOPInstanceUID is already stored. If set to "true", the new
+  // instance replaces the old one. If set to "false", the new
+  // instance is discarded and the old one is kept. Up to Orthanc
+  // 1.4.1, the implicit behavior corresponded to "false".
+  "OverwriteInstances": false,
+
+  // Maximum number of ZIP/media archives that are maintained by
+  // Orthanc, as a response to the asynchronous creation of archives.
+  // The least recently used archives get deleted as new archives are
+  // generated. This option was introduced in Orthanc 1.5.0, and has
+  // no effect on the synchronous generation of archives.
+  "MediaArchiveSize": 1,
+
+  // Performance setting to specify how Orthanc accesses the storage
+  // area during find operations (C-FIND, /tools/find API route and
+  // QIDO-RS in dicom-web). Three modes are available: (1) "Always"
+  // allows Orthanc to read the storage area as soon as it needs an
+  // information that is not present in its database (slowest mode),
+  // (2) "Never" prevents Orthanc from accessing the storage area, and
+  // makes it uses exclusively its database (fastest mode), and (3)
+  // "Answers" allows Orthanc to read the storage area to generate its
+  // answers, but not to filter the DICOM resources (balance between
+  // the two modes). By default, the mode is "Always", which
+  // corresponds to the behavior of Orthanc <= 1.5.0.
+  "StorageAccessOnFind": "Always",
+
+  // Extra Main Dicom tags that are stored in DB together with all default
+  // Main Dicom tags that are already stored.
+  // see https://orthanc.uclouvain.be/book/faq/main-dicom-tags.html 
+  // (new in Orthanc 1.11.0)
+  // Sequences tags are not supported.
+  // "ExtraMainDicomTags" : {
+  //   "Instance" : [
+  //     "Rows",
+  //     "Columns",
+  //     "ImageType",
+  //     "SOPClassUID",
+  //     "ContentDate",
+  //     "ContentTime",
+  //     "FrameOfReferenceUID",
+  //     "PixelSpacing",
+  //     "SpecificCharacterSet",
+  //     "BitsAllocated"
+  //   ],
+  //   "Series" : [],
+  //   "Study": [],
+  //   "Patient": []
+  // },
+
   "WebViewer": {
     "AnnotationStorageEnabled": true,
     "StudyDownloadEnabled": true,
@@ -19,98 +417,92 @@
     }
   },
   "DicomWeb": {
-    "Servers" : {
-      "production-dicom-web" : {
-        "Url" : "http://localhost:8042/dicom-web/",
-        "HttpHeaders": {
-          "Authorization" : "Bearer demo"
-        }
-      }
-    },
     "Enable": true,
     "Root": "/dicom-web/",
     "EnableWado": true,
     "WadoRoot": "/wado",
+    "Host": "127.0.0.1",
     "Ssl": false,
-    "QidoCaseSensitive": true,
-    "Host": "localhost:8042",
-    "StudiesMetadata" : "Full",
-    "StudiesMetadataExtrapolatedTags": ["AcquisitionDate"],
-    "SeriesMetadata" : "Full",
-    "SeriesMetadataExtrapolatedTags": [
-      "BitsAllocated",
-      "BitsStored",
-      "Columns",
-      "HighBit",
-      "PhotometricInterpretation",
-      "PixelSpacing",
-      "PlanarConfiguration",
-      "RescaleIntercept",
-      "RescaleSlope",
-      "Rows",
-      "SOPClassUID",
-      "SamplesPerPixel",
-      "SliceThickness"
-    ],
-    "EnableMetadataCache": true,
-    "MetadataWorkerThreadsCount": 4
+    "StowMaxInstances": 10,
+    "StowMaxSize": 10,
+    "QidoCaseSensitive": false
   },
+
   "MySQL" : {
     "EnableIndex" : true,
-    "EnableStorage" : true,
+    "EnableStorage" : false,
+    // For TCP connections (notably Windows)
     "Host" : "mysql-server",
+    // For TCP connections (notably Windows)
     "Port" : 3306,
+    // For UNIX on localhost
     "UnixSocket" : "/var/run/mysqld/mysqld.sock",
     "Database" : "orthanc",
     "Username" : "orthanc",
     "Password" : "orthanc",
+    // force SSL connections
     "EnableSsl" : false,
-    "SslVerifyServerCertificates": true,
+    // Verify server certificates if EnableSsl is true
+    "SslVerifyServerCertificates": false,
+    // Path to CA certificates to validate servers
     "SslCACertificates": "",
+
+    // Set the MySQL plugin to lock the database to prevent other instances of
+    // Orthanc from using the same database. If you want several instances of
+    // Orthanc to share the database, set the Lock to false.
     "Lock" : true,
+    // Governs how many times Orthanc tries to connect to the database,
+    // as well as how many times Orthanc replays transactions to deal with
+    // collisions between multiple writers.
     "MaximumConnectionRetries" : 10,
+
+    // is only used when opening one database connection to MySQL.
     "ConnectionRetryInterval" : 5,
+
+    // Controls the number of connections from the index plugin to the MySQL
+    // database. It is set to 1 by default, which corresponds to the old
+    // behavior of Orthanc <= 1.9.1.
     "IndexConnectionsCount" : 1
   },
-  "Authorization": {
-    "WebService": "http://authorization-server:8080/auth",
-    "TokenHttpHeaders": [
-      "Authorization"
-    ],
-    "TokenGetArguments": [
-      "Token"
-    ],
-    "StandardConfigurations": [
-      "osimis-web-viewer",
-      "stone-webviewer",
-      "orthanc-explorer-2",
-      "ohif"
-    ],
-    "UncheckedResources": [
-      "/osimis-viewer/config.js",
-      "/system",
-      "/dicom-web/servers",
-      "/dicom-web/info"
-    ],
-    "UncheckedFolders": [
-      "/tools/metrics-prometheus",
-      "/plugins",
-      "/app/",
-      "/wsi/app/",
-      "/osimis-viewer/app/",
-      "/osimis-viewer/languages/",
-      "/dicom-web/app/client/",
-      "/dicom-web/app/libs/",
-      "/dicom-web/servers/*/qido"
-    ],
-    "UncheckedLevels": [
-      "patient",
-      "series",
-      "instances"
-    ]
-
-  },
+  // "Authorization": {
+  //   "WebService": "http://authorization-server:8080/auth",
+  //   "TokenHttpHeaders": [
+  //     "Authorization"
+  //   ],
+  //   "TokenGetArguments": [
+  //     "Token"
+  //   ],
+  //   "StandardConfigurations": [
+  //     "osimis-web-viewer",
+  //     "stone-webviewer",
+  //     "orthanc-explorer-2",
+  //     "ohif"
+  //   ],
+  //   "UncheckedResources": [
+  //     "/osimis-viewer/config.js",
+  //     "/system",
+  //     "/dicom-web/servers",
+  //     "/dicom-web/info"
+  //   ],
+  //   "UncheckedFolders": [
+  //     "/tools/metrics-prometheus",
+  //     "/plugins",
+  //     "/app/",
+  //     "/wsi/app/",
+  //     "/osimis-viewer/app/",
+  //     "/osimis-viewer/languages/",
+  //     "/dicom-web/app/client/",
+  //     "/dicom-web/app/libs/",
+  //     "/dicom-web/servers/*/qido"
+  //   ],
+  //   "UncheckedLevels": [
+  //     "patient",
+  //     "series",
+  //     "instances"
+  //   ]
+  // },
   "Plugins": [
-    "/usr/share/orthanc/plugins"
+    "/usr/share/orthanc/plugins",
+    "/usr/local/share/orthanc/plugins"
   ]
 }
