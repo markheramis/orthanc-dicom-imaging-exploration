@@ -1,4 +1,4 @@
 .env
-database/*
+storage/
 express-server/node_modules/*
 express/server/server.log
