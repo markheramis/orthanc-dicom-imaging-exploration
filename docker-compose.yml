@@ -30,9 +30,9 @@ services:
     # volumes:
     #   - "./storage/database:/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: orthanc
-      POSTGRES_USER: orthanc
-      POSTGRES_PASSWORD: orthanc
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - 5432:5432
     networks:
