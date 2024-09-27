@@ -132,7 +132,9 @@
   // The list of the known DICOM modalities. This option is ignored if
   // "DicomModalitiesInDatabase" is set to "true", in which case you
   // must use the REST API to define modalities.
-  "DicomModalities": {},
+  "DicomModalities": {
+    "radiant": ["RADIANT", "localhost", 11115]
+  },
   // Whether to store the DICOM modalities in the Orthanc database
   // instead of in this configuration file (new in Orthanc 1.5.0)
   "DicomModalitiesInDatabase": false,
@@ -325,23 +327,23 @@
   // see https://orthanc.uclouvain.be/book/faq/main-dicom-tags.html 
   // (new in Orthanc 1.11.0)
   // Sequences tags are not supported.
-  // "ExtraMainDicomTags" : {
-  //   "Instance" : [
-  //     "Rows",
-  //     "Columns",
-  //     "ImageType",
-  //     "SOPClassUID",
-  //     "ContentDate",
-  //     "ContentTime",
-  //     "FrameOfReferenceUID",
-  //     "PixelSpacing",
-  //     "SpecificCharacterSet",
-  //     "BitsAllocated"
-  //   ],
-  //   "Series" : [],
-  //   "Study": [],
-  //   "Patient": []
-  // },
+  "ExtraMainDicomTags" : {
+    "Instance" : [
+      "Rows",
+      "Columns",
+      "ImageType",
+      "SOPClassUID",
+      "ContentDate",
+      "ContentTime",
+      "FrameOfReferenceUID",
+      "PixelSpacing",
+      "SpecificCharacterSet",
+      "BitsAllocated"
+    ],
+    "Series" : [],
+    "Study": [],
+    "Patient": []
+  },
   "Dicom": {
     "DicomServer": {
       "Enable": true,
@@ -367,7 +369,7 @@
     "Port" : 5432,
     "Database" : "orthanc",
     "Username" : "orthanc",
-    "Password" : "orthanc",
+    "Password" : "secret",
     "EnableSsl" : false,
     "MaximumConnectionRetries" : 10,
     "ConnectionRetryInterval" : 5,
@@ -379,43 +381,46 @@
   //   "BucketName": "MUST BE DEFINED BY YOU",
   //   "Region": "MUST BE DEFINED BY YOU"
   // },
-  // "Authorization": {
-  //   "WebService": "http://authorization-server:8080/auth",
-  //   "TokenHttpHeaders": [
-  //     "Authorization"
-  //   ],
-  //   "TokenGetArguments": [
-  //     "Token"
-  //   ],
-  //   "StandardConfigurations": [
-  //     "osimis-web-viewer",
-  //     "stone-webviewer",
-  //     "orthanc-explorer-2",
-  //     "ohif"
-  //   ],
-  //   "UncheckedResources": [
-  //     "/osimis-viewer/config.js",
-  //     "/system",
-  //     "/dicom-web/servers",
-  //     "/dicom-web/info"
-  //   ],
-  //   "UncheckedFolders": [
-  //     "/tools/metrics-prometheus",
-  //     "/plugins",
-  //     "/app/",
-  //     "/wsi/app/",
-  //     "/osimis-viewer/app/",
-  //     "/osimis-viewer/languages/",
-  //     "/dicom-web/app/client/",
-  //     "/dicom-web/app/libs/",
-  //     "/dicom-web/servers/*/qido"
-  //   ],
-  //   "UncheckedLevels": [
-  //     "patient",
-  //     "series",
-  //     "instances"
-  //   ]
-  // },
+  "Authorization": {
+    "WebServiceUserProfileUrl": "http://localhost:8000/orthanc/profile",
+    "WebServiceTokenValidationUrl": "http://localhost:8000/orthanc/tokens/validate",
+    "WebServiceTokenDecoderUrl": "http://localhost:8000/orthanc/tokens/decode",
+    "WebServiceTokenCreationBaseUrl": "http//localhost:8000/orthanc/tokens/",
+    "TokenHttpHeaders": [
+      "Authorization"
+    ],
+    "TokenGetArguments": [
+      "Token"
+    ],
+    "StandardConfigurations": [
+      "osimis-web-viewer",
+      "stone-webviewer",
+      "orthanc-explorer-2",
+      "ohif"
+    ],
+    "UncheckedResources": [
+      "/osimis-viewer/config.js",
+      "/system",
+      "/dicom-web/servers",
+      "/dicom-web/info"
+    ],
+    "UncheckedFolders": [
+      "/tools/metrics-prometheus",
+      "/plugins",
+      "/app/",
+      "/wsi/app/",
+      "/osimis-viewer/app/",
+      "/osimis-viewer/languages/",
+      "/dicom-web/app/client/",
+      "/dicom-web/app/libs/",
+      "/dicom-web/servers/*/qido"
+    ],
+    "UncheckedLevels": [
+      "patient",
+      "series",
+      "instances"
+    ]
+  },
   "Plugins": [
     "/usr/share/orthanc/plugins"
   ]

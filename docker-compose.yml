@@ -1,5 +1,3 @@
-version: "3.3"
-
 services:
   orthanc:
     container_name: orthanc
@@ -20,61 +18,23 @@ services:
     networks:
       - "orthanc-network"
     depends_on:
-      - postgres-server
+      - mysql-server
     #   - authorization-server
 
   postgres-server:
     container_name: postgres
     image: postgres:14
     restart: unless-stopped
-    # volumes:
-    #   - "./storage/database:/var/lib/postgresql/data"
+    volumes:
+      - "./storage/database:/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: ${DB_DATABASE}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: orthanc
+      POSTGRES_USER: orthanc
+      POSTGRES_PASSWORD: secret
     ports:
       - 5432:5432
     networks:
       - "orthanc-network"
-
-  # mysql-server:
-  #   container_name: mysql-server
-  #   image: mysql:8.0
-  #   command: [
-  #     mysqld,
-  #     --default-authentication-plugin=mysql_native_password,
-  #     --log-bin-trust-function-creators=1,
-  #   ]
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-  #     MYSQL_DATABASE: ${DB_DATABASE}
-  #     MYSQL_USER: ${DB_USERNAME}
-  #     MYSQL_PASSWORD: ${DB_PASSWORD}
-  #     MYSQL_ALLOW_EMPTY_PASSWORD: "no"
-  #   volumes:
-  #     - ./storage/database:/var/lib/mysql
-  #   networks:
-  #     - "orthanc-network"
-
-  # phpmyadmin:
-  #   container_name: phpmyadmin
-  #   image: phpmyadmin
-  #   privileged: false
-  #   security_opt:
-  #     - no-new-privileges:true
-  #   ports:
-  #     - 8081:80
-  #   environment:
-  #     PMA_ARBITRARY: 1
-  #     PMA_HOST: mysql-server
-  #     MYSQL_USER: ${DB_USERNAME}
-  #     MYSQL_PASSWORD: ${DB_PASSWORD}
-  #   depends_on:
-  #     - mysql-server
-  #   networks:
-  #     - "orthanc-network"
-
 networks:
   orthanc-network:
     name: orthanc-network
